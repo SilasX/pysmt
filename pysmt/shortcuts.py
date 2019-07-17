@@ -243,6 +243,29 @@ def Symbol(name, typename=types.BOOL):
     return get_env().formula_manager.Symbol(name, typename)
 
 
+class SymbolVector(object):
+
+    def __init__(self, name, size, typename=types.BOOL):
+        if "-" in name:
+            raise Exception("Character '-' not allowed in SymbolVector names")
+        if type(size) not in (int, long) or size < 1:
+            raise Exception("Size must be positive integer")
+        self.name = name
+        self.size = size
+        self.vec = [
+            get_env().formula_manager.Symbol(
+                "{}[{}]".format(name, i),
+                typename
+            )
+            for i in xrange(size)
+        ]
+
+    def __getitem__(self, i):
+        if type(i) not in (int, long) or i >= self.size:
+            raise Exception("Must by integer less than self.size")
+        return self.vec[i]
+
+
 def FreshSymbol(typename=types.BOOL, template=None):
     """Returns a symbol with a fresh name and given type.
 
