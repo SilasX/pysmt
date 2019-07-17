@@ -246,8 +246,6 @@ def Symbol(name, typename=types.BOOL):
 class SymbolVector(object):
 
     def __init__(self, name, size, typename=types.BOOL):
-        if "-" in name:
-            raise Exception("Character '-' not allowed in SymbolVector names")
         if type(size) not in (int, long) or size < 1:
             raise Exception("Size must be positive integer")
         self.name = name
@@ -263,6 +261,25 @@ class SymbolVector(object):
     def __getitem__(self, i):
         if type(i) not in (int, long) or i >= self.size:
             raise Exception("Must by integer less than self.size")
+        return self.vec[i]
+
+
+class SymbolMatrix(object):
+
+    def __init__(self, name, sizex, sizey, typename=types.BOOL):
+        if type(sizex) not in (int, long) or sizex < 1:
+            raise Exception("Size must be positive integer")
+        self.name = name
+        self.sizex = sizex
+        self.sizey = sizey
+        self.vec = [
+            SymbolVector("{}[{}]".format(name, i), sizey, typename)
+            for i in xrange(sizex)
+        ]
+
+    def __getitem__(self, i):
+        if type(i) not in (int, long) or i >= self.sizex:
+            raise Exception("Must by integer less than self.sizex")
         return self.vec[i]
 
 
